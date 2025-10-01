@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Abacus Level 1 Trainer</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            padding: 30px;
+            background-color: #f9f9f9;
+        }
+        #question {
+            font-size: 28px;
+            margin: 20px;
+        }
+        input[type="number"] {
+            font-size: 20px;
+            width: 100px;
+            padding: 5px;
+        }
+        #feedback {
+            margin-top: 15px;
+            font-size: 20px;
+        }
+        #score {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: green;
+        }
+        button {
+            font-size: 18px;
+            padding: 8px 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Abacus Level 1 Trainer</h1>
+    <div id="question"></div>
+    <input type="number" id="answer" placeholder="Your answer" autofocus>
+    <button onclick="checkAnswer()">Submit</button>
+    <div id="feedback"></div>
+    <div id="score">Score: 0</div>
+
+    <script>
+        let currentQuestion = {};
+        let score = 0;
+
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 10);
+            const num2 = Math.floor(Math.random() * 10);
+            let operator, a, b;
+
+            if (Math.random() < 0.5) {
+                operator = '+';
+                a = num1;
+                b = num2;
+            } else {
+                operator = '-';
+                a = Math.max(num1, num2); // avoid negative results
+                b = Math.min(num1, num2);
+            }
+
+            currentQuestion = { num1: a, num2: b, operator };
+            document.getElementById("question").textContent = `${a} ${operator} ${b}`;
+            document.getElementById("answer").value = '';
+            document.getElementById("answer").focus();
+            document.getElementById("feedback").textContent = '';
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById("answer").value);
+            const correctAnswer = currentQuestion.operator === '+' 
+                ? currentQuestion.num1 + currentQuestion.num2 
+                : currentQuestion.num1 - currentQuestion.num2;
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById("feedback").textContent = "✅ Correct!";
+                score++;
+            } else {
+                document.getElementById("feedback").textContent = `❌ Wrong. Correct answer is ${correctAnswer}`;
+            }
+
+            document.getElementById("score").textContent = `Score: ${score}`;
+            setTimeout(generateQuestion, 2000);
+        }
+
+        // Allow Enter key to submit
+        document.getElementById("answer").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        });
+
+        // Initialize first question
+        generateQuestion();
+    </script>
+</body>
+</html>
